@@ -1,0 +1,10 @@
+<RCC>
+    <qresource prefix="/">
+        <file>resources/icons/add.svg</file>
+        <file>resources/icons/minus.svg</file>
+        <file>resources/icons/copy.svg</file>
+        <file>resources/icons/close.svg</file>
+        <file>resources/icons/complete.svg</file>
+        <file>resources/logo/PasTk_logo.ico</file>
+    </qresource>
+</RCC>
