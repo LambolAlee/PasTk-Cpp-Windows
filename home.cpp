@@ -17,6 +17,7 @@
 Home::Home(QWidget *parent)
     : QMainWindow(parent)
     , ui(new Ui::MainWindow)
+    , _sep(new QString)
 {
     ui->setupUi(this);
     resetPos();
@@ -35,6 +36,7 @@ Home::~Home()
 {
     delete ui;
     delete settings;
+    delete _sep;
 }
 
 void Home::initStatusBar()
@@ -67,7 +69,7 @@ void Home::createToolbar()
     connect(group, &QActionGroup::triggered, this, &Home::setMode);
     QString name = settings->value("mode", "merge").toString();
     QAction *action = modeMenu->findChild<QAction*>(name, Qt::FindDirectChildrenOnly);
-    qDebug() << action->text() << name << m->objectName();
+    //qDebug() << action->text() << name << m->objectName();
     action->trigger();
 
     ui->menuBar->addAction("About", this, &Home::switchPage);
@@ -111,15 +113,15 @@ void Home::continueToRun()
     hide();
     switch (_mode) {
         case MERGE: {
-            MergeDialog md(this);
-            connect(&md, &MergeDialog::connector, this, [=](const QString &sep) { paster.pasteWithSep(sep); });
+            MergeDialog md(_sep, this);
             md.exec();
+            paster.pasteWithSep(*_sep);
             break;
         }
         case SEPERATE: {
-            MergeDialog md(this, true);
-            connect(&md, &MergeDialog::connector, this, [=](const QString &sep){ paster.pasteWithSep(sep); });
+            MergeDialog md(_sep, this, true);
             md.exec();
+            paster.pasteWithSep(*_sep);
             break;
         }
         case CONTINUE: {
@@ -182,7 +184,7 @@ void Home::stopWatch()
 void Home::callDetail()
 {
     if (!detailW) {
-        qDebug() << "Create new instance!";
+        //qDebug() << "Create new instance!";
         detailW = new DetailWindow(model, this);
         connect(detailW, &DetailWindow::windowGoBack, this, &Home::startWatch);
     }

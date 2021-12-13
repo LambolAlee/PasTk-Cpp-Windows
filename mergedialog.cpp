@@ -1,10 +1,11 @@
 #include "mergedialog.h"
 #include "ui_mergedialog.h"
 
-MergeDialog::MergeDialog(QWidget *parent, bool segMode) :
+MergeDialog::MergeDialog(QString *sep, QWidget *parent, bool segMode) :
     QDialog(parent),
     ui(new Ui::MergeDialog),
-    segMode(segMode)
+    segMode(segMode),
+    _sep(sep)
 {
     ui->setupUi(this);
     if (segMode)
@@ -31,7 +32,8 @@ void MergeDialog::sendConnector()
     } else {
         con = ui->conjLineEdit->text();
     }
-    emit connector(con);
+    _sep->clear();
+    _sep->append(con);
 }
 
 void MergeDialog::showSegOption()

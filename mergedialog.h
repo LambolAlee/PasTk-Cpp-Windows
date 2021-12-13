@@ -12,17 +12,15 @@ class MergeDialog : public QDialog
     Q_OBJECT
 
 public:
-    explicit MergeDialog(QWidget *parent = nullptr, bool segMode = false);
+    explicit MergeDialog(QString *sep, QWidget *parent = nullptr, bool segMode = false);
     ~MergeDialog();
-
-signals:
-    void connector(const QString &);
 
 private slots:
     void sendConnector();
 
 private:
     Ui::MergeDialog *ui;
+    QString *_sep;
     bool segMode;
     void showSegOption();
     void hideSegOption();

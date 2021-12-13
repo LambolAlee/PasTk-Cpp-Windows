@@ -46,6 +46,7 @@ private:
     Mode _mode;
     PasteUtil &paster = PasteUtil::instance();
     QSettings *settings;
+    QString *_sep;
 
     void startWatch();
     void stopWatch();
