@@ -1,5 +1,7 @@
 #include "datamodel.h"
 #include <algorithm>
+#include <QSize>
+#include <QToolTip>
 
 
 DataModel::DataModel(QObject *parent)
@@ -16,10 +18,12 @@ QVariant DataModel::data(const QModelIndex &index, int role) const
 {
     if (!index.isValid())
         return QVariant();
+
+    QString text = _data.getAt(index).toString();
+
     if (role == Qt::DisplayRole) {
-        QString text = _data.getAt(index).toString();
-        if (text.length() > 25)
-            text = text.mid(0, 25).append(" ...");
+        return text.simplified();
+    } else if (role == Qt::ToolTipRole) {
         return text;
     }
     else

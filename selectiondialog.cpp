@@ -1,5 +1,6 @@
 #include "selectiondialog.h"
 #include "ui_selectiondialog.h"
+#include "itemdelegate.h"
 #include <windows.h>
 
 SelectionDialog::SelectionDialog(QWidget *parent) :
@@ -9,6 +10,8 @@ SelectionDialog::SelectionDialog(QWidget *parent) :
 {
     ui->setupUi(this);
     ui->listView->setModel(model);
+    ItemDelegate *d = new ItemDelegate(ItemDelegate::UserSizeHintRole::SelectItemSizeHint, ui->listView);
+    ui->listView->setItemDelegate(d);
     HWND m_hWnd = (HWND)winId();
     LONG exs = GetWindowLong(m_hWnd, GWL_EXSTYLE);
     SetWindowLong(m_hWnd, GWL_EXSTYLE, exs | WS_EX_NOACTIVATE | WS_EX_COMPOSITED);

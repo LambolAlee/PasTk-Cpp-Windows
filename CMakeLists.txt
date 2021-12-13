@@ -32,6 +32,7 @@ set(PROJECT_SOURCES
         continuousdialog.h continuousdialog.cpp continuousdialog.ui
         pasteutil.h pasteutil.cpp
         attentiondialog.h attentiondialog.cpp attentiondialog.ui
+        itemdelegate.h itemdelegate.cpp
 )
 
 if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
