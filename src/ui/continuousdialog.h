@@ -2,9 +2,9 @@
 #define CONTINUOUSDIALOG_H
 
 #include <QDialog>
-#include "item.h"
-#include "data.h"
-#include "pasteutil.h"
+#include "data/item.h"
+#include "data/data.h"
+#include "utils/pasteutil.h"
 
 namespace Ui {
 class ContinuousDialog;

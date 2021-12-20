@@ -1,10 +1,11 @@
 #include "detailwindow.h"
 #include "ui_detailwindow.h"
-#include "datamodel.h"
-#include "itemdelegate.h"
+#include "data/itemdelegate.h"
 #include <QPushButton>
 #include <QClipboard>
 #include <QScreen>
+#include <QAction>
+#include <QMenu>
 
 DetailWindow::DetailWindow(DataModel *model, QWidget *parent) :
     QMainWindow(parent),
@@ -17,6 +18,7 @@ DetailWindow::DetailWindow(DataModel *model, QWidget *parent) :
     ui->previewList->setModel(model);
     ItemDelegate *d = new ItemDelegate(ItemDelegate::UserSizeHintRole::DetailItemSizeHint, ui->previewList);
     ui->previewList->setItemDelegate(d);
+    initContextMenu();
     connect(ui->quitButton, &QPushButton::clicked, this, &DetailWindow::close);
     connect(ui->previewList, &QListView::clicked, this, [=](const QModelIndex &index){ displayData(index); });
     connect(ui->detailText, &QTextEdit::copyAvailable, this, [this](bool yes){ this->textCanCopy = yes; });
@@ -30,6 +32,14 @@ DetailWindow::DetailWindow(DataModel *model, QWidget *parent) :
 DetailWindow::~DetailWindow()
 {
     delete ui;
+}
+
+void DetailWindow::initContextMenu()
+{
+    context = new QMenu(ui->previewList);
+    context->addAction("delete", this, &DetailWindow::removeData);
+    context->addAction("add", this, &DetailWindow::addData);
+    context->addAction("copy", this, &DetailWindow::copyItem);
 }
 
 void DetailWindow::closeEvent(QCloseEvent *event)
@@ -68,6 +78,11 @@ void DetailWindow::copySelected()
         ui->detailText->copy();
         ui->statusBar->showMessage("The selected text has been copied to clipboard successfully.", 1500);
     }
+}
+
+void DetailWindow::copyItem()
+{
+
 }
 
 bool DetailWindow::commit()

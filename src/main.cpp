@@ -1,4 +1,4 @@
-#include "home.h"
+#include "ui/home.h"
 
 #include <QApplication>
 

@@ -225,7 +225,7 @@
   <customwidget>
    <class>AnimatedStackedWidget</class>
    <extends>QStackedWidget</extends>
-   <header>animatedstackedwidget.h</header>
+   <header>widgets/animatedstackedwidget.h</header>
    <container>1</container>
   </customwidget>
  </customwidgets>

@@ -3,8 +3,8 @@
 #include <QString>
 #include <QClipboard>
 #include <QApplication>
-#include "data.h"
-#include "item.h"
+#include "data/data.h"
+#include "data/item.h"
 #include "singleton.hpp"
 
 #define VK_V 0x56

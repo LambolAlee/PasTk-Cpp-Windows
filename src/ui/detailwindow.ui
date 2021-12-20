@@ -85,6 +85,9 @@
           <pointsize>10</pointsize>
          </font>
         </property>
+        <property name="contextMenuPolicy">
+         <enum>Qt::DefaultContextMenu</enum>
+        </property>
         <property name="movement">
          <enum>QListView::Static</enum>
         </property>

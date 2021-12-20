@@ -3,9 +3,10 @@
 
 #include <QMainWindow>
 #include <QApplication>
-#include "data.h"
+#include "data/data.h"
+#include "data/datamodel.h"
 #include "detailwindow.h"
-#include "pasteutil.h"
+#include "utils/pasteutil.h"
 #include <QSettings>
 #include <QLabel>
 
@@ -47,6 +48,7 @@ private:
     PasteUtil &paster = PasteUtil::instance();
     QSettings *settings;
     QString *_sep;
+    QString old;
 
     void startWatch();
     void stopWatch();

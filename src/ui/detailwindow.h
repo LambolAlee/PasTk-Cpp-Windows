@@ -3,8 +3,8 @@
 
 #include <QMainWindow>
 #include <QCloseEvent>
-#include "data.h"
-#include "datamodel.h"
+#include "data/data.h"
+#include "data/datamodel.h"
 
 namespace Ui {
 class DetailWindow;
@@ -37,6 +37,7 @@ private:
     DataModel *model;
     bool textCanCopy = false;
     QModelIndexList selection;
+    QMenu *context;
 
     void displayData(const QModelIndex &index);
     void displayData();
@@ -45,6 +46,8 @@ private:
     void resetPos();
     bool removeData();
     bool addData();
+    void initContextMenu();
+    void copyItem();
 };
 
 #endif // DETAILWINDOW_H

@@ -1,6 +1,6 @@
 #include "selectiondialog.h"
 #include "ui_selectiondialog.h"
-#include "itemdelegate.h"
+#include "data/itemdelegate.h"
 #include <windows.h>
 
 SelectionDialog::SelectionDialog(QWidget *parent) :

@@ -2,9 +2,9 @@
 #define SELECTIONDIALOG_H
 
 #include <QDialog>
-#include "data.h"
-#include "pasteutil.h"
-#include "datamodel.h"
+#include "data/data.h"
+#include "utils/pasteutil.h"
+#include "data/datamodel.h"
 
 namespace Ui {
 class SelectionDialog;

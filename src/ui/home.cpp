@@ -1,18 +1,16 @@
 #include "home.h"
-#include "./ui_home.h"
-#include "data.h"
+#include "ui_home.h"
 #include "detailwindow.h"
-#include "datamodel.h"
 
 #include "mergedialog.h"
 #include "continuousdialog.h"
 #include "selectiondialog.h"
 #include "attentiondialog.h"
+#include "widgets/animatedstackedwidget.h"
 
-#include <windows.h>
 #include <QScreen>
 #include <QActionGroup>
-
+#include <QPainter>
 
 Home::Home(QWidget *parent)
     : QMainWindow(parent)
@@ -114,14 +112,14 @@ void Home::continueToRun()
     switch (_mode) {
         case MERGE: {
             MergeDialog md(_sep, this);
-            md.exec();
-            paster.pasteWithSep(*_sep);
+            if (md.exec() == QDialog::Accepted)
+                paster.pasteWithSep(*_sep);
             break;
         }
         case SEPERATE: {
             MergeDialog md(_sep, this, true);
-            md.exec();
-            paster.pasteWithSep(*_sep);
+            if (md.exec() == QDialog::Accepted)
+                paster.pasteWithSep(*_sep);
             break;
         }
         case CONTINUE: {
@@ -156,6 +154,10 @@ void Home::setMode(QAction *action)
 void Home::push()
 {
     QString s = _cb->text();
+    if (s == old || s.isEmpty())
+        return;
+    else
+        old = s;
     _data.push(s);
 }
 
@@ -171,6 +173,7 @@ void Home::updateDigital()
 void Home::startWatch()
 {
     if (status) {
+        old.clear();
         connect(_cb, &QClipboard::dataChanged, this, &Home::push);
         connect(_cb, &QClipboard::dataChanged, this, &Home::updateDigital);
     }
