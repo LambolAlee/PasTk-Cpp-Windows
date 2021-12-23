@@ -18,28 +18,21 @@ DetailWindow::DetailWindow(DataModel *model, QWidget *parent) :
     ui->previewList->setModel(model);
     ItemDelegate *d = new ItemDelegate(ItemDelegate::UserSizeHintRole::DetailItemSizeHint, ui->previewList);
     ui->previewList->setItemDelegate(d);
-    initContextMenu();
+
     connect(ui->quitButton, &QPushButton::clicked, this, &DetailWindow::close);
     connect(ui->previewList, &QListView::clicked, this, [=](const QModelIndex &index){ displayData(index); });
     connect(ui->detailText, &QTextEdit::copyAvailable, this, [this](bool yes){ this->textCanCopy = yes; });
     connect(ui->copyButton, &QPushButton::clicked, this, &DetailWindow::copySelected);
     connect(ui->commitButton, &QPushButton::clicked, this, &DetailWindow::commit);
-    connect(ui->removeButton, &QPushButton::clicked, this, &DetailWindow::removeData);
-    connect(ui->addButton, &QPushButton::clicked, this, &DetailWindow::addData);
+    connect(ui->removeButton, &QPushButton::clicked, ui->previewList->adapter, &DataAdapter::removeData);
+    connect(ui->previewList->adapter, &DataAdapter::dataRemovedSignal, this, &DetailWindow::updateText);
+    connect(ui->addButton, &QPushButton::clicked, ui->previewList->adapter, &DataAdapter::addData);
     connect(this, &DetailWindow::windowGoFront, [=]{ displayData(); });
 }
 
 DetailWindow::~DetailWindow()
 {
     delete ui;
-}
-
-void DetailWindow::initContextMenu()
-{
-    context = new QMenu(ui->previewList);
-    context->addAction("delete", this, &DetailWindow::removeData);
-    context->addAction("add", this, &DetailWindow::addData);
-    context->addAction("copy", this, &DetailWindow::copyItem);
 }
 
 void DetailWindow::closeEvent(QCloseEvent *event)
@@ -60,7 +53,7 @@ void DetailWindow::resetPos()
 void DetailWindow::displayData(const QModelIndex &index)
 {
     Item s = _data.getAt(index);
-    if (s.toString() == "**New item here**")
+    if (s.isNewFish())
         s.clear();
     ui->detailText->setText(s.toString());
 }
@@ -80,11 +73,6 @@ void DetailWindow::copySelected()
     }
 }
 
-void DetailWindow::copyItem()
-{
-
-}
-
 bool DetailWindow::commit()
 {
     QModelIndexList i = ui->previewList->selectionModel()->selectedRows();
@@ -98,30 +86,10 @@ bool DetailWindow::commit()
     return true;
 }
 
-bool DetailWindow::removeData()
+void DetailWindow::updateText(const QModelIndexList &l)
 {
-    auto s = ui->previewList->selectionModel();
-    auto i = s->selectedRows();
-    if (i.isEmpty()) {
-        return false;
-    } else {
-        model->removeRow(i.at(0).row());
-        i = s->selectedRows();
-        if (i.isEmpty())
-            ui->detailText->clear();
-        else
-            displayData(i.at(0));
-        return true;
-    }
-}
-
-bool DetailWindow::addData()
-{
-    int index = _data.size();
-    QModelIndexList i = ui->previewList->selectionModel()->selectedRows();
-    if (!i.isEmpty()) {
-        index = i.at(0).row() + 1;
-    }
-    model->insertRow(index);
-    return true;
+    if (l.isEmpty())
+        ui->detailText->clear();
+    else
+        displayData(l.at(0));
 }

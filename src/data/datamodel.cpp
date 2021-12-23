@@ -19,12 +19,15 @@ QVariant DataModel::data(const QModelIndex &index, int role) const
     if (!index.isValid())
         return QVariant();
 
-    QString text = _data.getAt(index).toString();
+    Item item = _data.getAt(index);
 
     if (role == Qt::DisplayRole) {
-        return text.simplified();
-    } else if (role == Qt::ToolTipRole) {
-        return text;
+        return item.toString().simplified();
+    } else if (role == Qt::ToolTipRole || role == Qt::UserRole) {
+        if (item.isNewFish())
+            return "";
+        else
+            return item.toString();
     }
     else
         return QVariant();

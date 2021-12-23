@@ -6,5 +6,8 @@
         <file>resources/icons/close.svg</file>
         <file>resources/icons/complete.svg</file>
         <file>resources/logo/PasTk_logo.ico</file>
+        <file>resources/icons/setting.svg</file>
+        <file>resources/icons/browse.svg</file>
+        <file>resources/icons/sign-out.svg</file>
     </qresource>
 </RCC>

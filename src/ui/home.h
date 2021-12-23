@@ -7,8 +7,12 @@
 #include "data/datamodel.h"
 #include "detailwindow.h"
 #include "utils/pasteutil.h"
+#include "utils/shiftclickobserver.h"
 #include <QSettings>
 #include <QLabel>
+#include <QSystemTrayIcon>
+#include <QHotkey>
+#include <QToolButton>
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }
@@ -29,12 +33,20 @@ public:
         SELECT,
     };
 
+    void setHotkey(QHotkey *hk);
+
 private slots:
     void start();
     void push();
     void updateDigital();
     void setMode(QAction *);
     void switchPage();
+    void hideAndShow();
+    void handleTrayActivated(QSystemTrayIcon::ActivationReason);
+    inline void quitDirectly(){ directQuitFlag = true; close(); }
+
+private:
+    void closeEvent(QCloseEvent *event) override;
 
 private:
     Ui::MainWindow *ui;
@@ -49,6 +61,13 @@ private:
     QSettings *settings;
     QString *_sep;
     QString old;
+    QSystemTrayIcon *tray;
+    QHotkey *hotkey;
+    bool directQuitFlag = false;
+    QMenu *trayMenu;
+    bool firstHide = true;
+    QToolButton *settingButton;
+    ShiftClickObserver *obs;
 
     void startWatch();
     void stopWatch();
@@ -60,7 +79,9 @@ private:
     }
     void createToolbar();
     void initStatusBar();
+    void initSysTray();
     void resetPos();
     void continueToRun();
+    void hideHome();
 };
 #endif // HOME_H

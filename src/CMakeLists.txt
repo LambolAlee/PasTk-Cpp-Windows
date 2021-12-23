@@ -1,7 +1,5 @@
 cmake_minimum_required(VERSION 3.5)
 
-project(PasTk-Cpp VERSION 0.2.1 LANGUAGES CXX)
-
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
 
 set(CMAKE_AUTOUIC ON)
@@ -32,6 +30,9 @@ set(PROJECT_SOURCES
         data/datamodel.h
         data/datamodel.cpp
 
+        data/dataadapter.h
+        data/dataadapter.cpp
+
         rc.qrc
 
         data/item.h
@@ -40,7 +41,13 @@ set(PROJECT_SOURCES
         widgets/animatedstackedwidget.h
         widgets/animatedstackedwidget.cpp
 
+        widgets/listviewofme.h
+        widgets/listviewofme.cpp
+
         utils/singleton.hpp
+
+        utils/shiftclickobserver.h
+        utils/shiftclickobserver.cpp
 
         ui/mergedialog.h
         ui/mergedialog.cpp
@@ -65,7 +72,18 @@ set(PROJECT_SOURCES
         data/itemdelegate.cpp
 )
 
-include_directories(${CMAKE_CURRENT_BINARY_DIR})
+include(FetchContent)
+
+set(QT_DEFAULT_MAJOR_VERSION 6)
+option(QHOTKEY_INSTALL OFF)
+FetchContent_Declare(QHotkey
+    GIT_REPOSITORY https://github.com/Skycoder42/QHotkey
+    GIT_TAG 1.5.0
+)
+FetchContent_MakeAvailable(QHotkey)
+
+set(QAPPLICATION_CLASS QApplication CACHE STRING "Inheritance class for SingleApplication")
+add_subdirectory(third-party/singleapplication)
 
 if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
     qt_add_executable(PasTk-Cpp WIN32
@@ -93,6 +111,8 @@ endif()
 
 target_link_libraries(PasTk-Cpp PRIVATE Qt${QT_VERSION_MAJOR}::Widgets)
 target_link_libraries(PasTk-Cpp PRIVATE Qt${QT_VERSION_MAJOR}::Gui Qt${QT_VERSION_MAJOR}::Core)
+target_link_libraries(PasTk-Cpp PRIVATE QHotkey::QHotkey)
+target_link_libraries(PasTk-Cpp PRIVATE SingleApplication::SingleApplication)
 
 set_target_properties(PasTk-Cpp PROPERTIES
     MACOSX_BUNDLE_GUI_IDENTIFIER my.example.com

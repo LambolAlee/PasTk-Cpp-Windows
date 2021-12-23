@@ -20,12 +20,15 @@ Home::Home(QWidget *parent)
     ui->setupUi(this);
     resetPos();
     setWindowFlags(Qt::WindowStaysOnTopHint);
+    setWindowFlags(windowFlags() & ~Qt::WindowMaximizeButtonHint);
+    setFixedSize(this->width(), this->height());
     setWindowIcon(QIcon(":/resources/logo/PasTk_logo.ico"));
     settings = new QSettings("./conf.ini", QSettings::IniFormat);
     initStatusBar();
     createToolbar();
+    initSysTray();
     model = new DataModel(this);
-    ui->stackedWidget->setDuration(400);
+    ui->stackedWidget->setDuration(200);
     connect(ui->startButton, &QPushButton::clicked, this, &Home::start);
     connect(model, &DataModel::updateLcdNumber, this, &Home::updateDigital);
 }
@@ -40,8 +43,14 @@ Home::~Home()
 void Home::initStatusBar()
 {
     modeLabel = new QLabel(this);
+    settingButton = new QToolButton(this);
+    settingButton->setStyleSheet("background:transparent;");
+    QIcon icon;
+    icon.addFile(QString::fromUtf8(":/resources/icons/setting.svg"), QSize(), QIcon::Normal, QIcon::Off);
+    settingButton->setIcon(icon);
     modeLabel->setStyleSheet("color:#646464;");
     ui->statusBar->addWidget(modeLabel);
+    ui->statusBar->addPermanentWidget(settingButton);
 }
 
 void Home::createToolbar()
@@ -67,13 +76,74 @@ void Home::createToolbar()
     connect(group, &QActionGroup::triggered, this, &Home::setMode);
     QString name = settings->value("mode", "merge").toString();
     QAction *action = modeMenu->findChild<QAction*>(name, Qt::FindDirectChildrenOnly);
-    //qDebug() << action->text() << name << m->objectName();
     action->trigger();
 
     ui->menuBar->addAction("About", this, &Home::switchPage);
     ui->menuBar->addAction("Detail", this, &Home::callDetail);
     ui->menuBar->addAction("Reset", this, &Home::reset);
-    ui->menuBar->addAction("Exit", QApplication::quit);
+    ui->menuBar->addAction("Exit", this, &Home::close);
+    obs = new ShiftClickObserver(this);
+    ui->menuBar->installEventFilter(obs);
+    connect(obs, &ShiftClickObserver::shiftClicked, this, &Home::quitDirectly);
+}
+
+void Home::initSysTray()
+{
+    QMenu *trayMenu = new QMenu(this);
+    QAction *showAction = trayMenu->addAction("Show", this, [=]{ if (!isVisible()) show(); });
+    QAction *exitAction = trayMenu->addAction("Exit", this, &Home::quitDirectly);
+    QIcon icon;
+    icon.addFile(QString::fromUtf8(":/resources/icons/browse.svg"), QSize(), QIcon::Normal, QIcon::Off);
+    showAction->setIcon(icon);
+    QIcon icon1;
+    icon1.addFile(QString::fromUtf8(":/resources/icons/sign-out.svg"), QSize(), QIcon::Normal, QIcon::Off);
+    exitAction->setIcon(icon1);
+
+    tray = new QSystemTrayIcon(QIcon(":/resources/logo/PasTk_logo.ico"), this);
+    tray->setToolTip("PasTk-Cpp");
+    tray->setContextMenu(trayMenu);
+    connect(tray, &QSystemTrayIcon::activated, this, &Home::handleTrayActivated);
+    tray->show();
+}
+
+void Home::handleTrayActivated(QSystemTrayIcon::ActivationReason reason)
+{
+    switch (reason) {
+    case (QSystemTrayIcon::DoubleClick):
+        if (!isVisible())
+            show();
+        break;
+    default:
+        break;
+    }
+}
+
+void Home::setHotkey(QHotkey *hk)
+{
+    hotkey = hk;
+    connect(hk, &QHotkey::activated, this, &Home::hideAndShow);
+}
+
+void Home::closeEvent(QCloseEvent *event)
+{
+    if (directQuitFlag)
+        event->accept();
+    else if (settings->value("hide_to_system_tray", false).toBool()) {
+        hide();
+        event->ignore();
+    } else {
+        AttentionDialog dialog;
+        dialog.setTextWithSetting("Do you want to hide to the system tray rather than quit directly", "hide_to_system_tray");
+        switch (dialog.exec()) {
+        case (QDialog::Accepted):
+            hideHome();
+            event->ignore();
+            break;
+        case (QDialog::Rejected):
+            event->accept();
+            break;
+        }
+    }
 }
 
 void Home::switchPage()
@@ -208,4 +278,21 @@ void Home::resetPos()
     QScreen *screen = QApplication::primaryScreen();
     QRect geometry = screen->availableGeometry();
     move((geometry.width()-width())/2, 0);
+}
+
+void Home::hideAndShow()
+{
+    if (isVisible())
+        hideHome();
+    else
+        show();
+}
+
+void Home::hideHome()
+{
+    hide();
+    if (Q_UNLIKELY(firstHide)) {
+        firstHide = false;
+        tray->showMessage("PasTk-Cpp", "I'm in your system tray~");
+    }
 }

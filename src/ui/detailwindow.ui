@@ -61,7 +61,7 @@
        </spacer>
       </item>
       <item>
-       <widget class="QListView" name="previewList">
+       <widget class="ListViewOfMe" name="previewList">
         <property name="sizePolicy">
          <sizepolicy hsizetype="Fixed" vsizetype="Expanding">
           <horstretch>0</horstretch>
@@ -132,7 +132,7 @@
            <string>plus</string>
           </property>
           <property name="icon">
-           <iconset resource="rc.qrc">
+           <iconset resource="../rc.qrc">
             <normaloff>:/resources/icons/add.svg</normaloff>:/resources/icons/add.svg</iconset>
           </property>
          </widget>
@@ -161,7 +161,7 @@
            <string>minus</string>
           </property>
           <property name="icon">
-           <iconset resource="rc.qrc">
+           <iconset resource="../rc.qrc">
             <normaloff>:/resources/icons/minus.svg</normaloff>:/resources/icons/minus.svg</iconset>
           </property>
          </widget>
@@ -190,7 +190,7 @@
            <string>copy</string>
           </property>
           <property name="icon">
-           <iconset resource="rc.qrc">
+           <iconset resource="../rc.qrc">
             <normaloff>:/resources/icons/copy.svg</normaloff>:/resources/icons/copy.svg</iconset>
           </property>
          </widget>
@@ -219,7 +219,7 @@
            <string>complete</string>
           </property>
           <property name="icon">
-           <iconset resource="rc.qrc">
+           <iconset resource="../rc.qrc">
             <normaloff>:/resources/icons/complete.svg</normaloff>:/resources/icons/complete.svg</iconset>
           </property>
          </widget>
@@ -261,7 +261,7 @@
            <string>Q</string>
           </property>
           <property name="icon">
-           <iconset resource="rc.qrc">
+           <iconset resource="../rc.qrc">
             <normaloff>:/resources/icons/close.svg</normaloff>:/resources/icons/close.svg</iconset>
           </property>
          </widget>
@@ -289,8 +289,15 @@
   </widget>
   <widget class="QStatusBar" name="statusBar"/>
  </widget>
+ <customwidgets>
+  <customwidget>
+   <class>ListViewOfMe</class>
+   <extends>QListView</extends>
+   <header>widgets/listviewofme.h</header>
+  </customwidget>
+ </customwidgets>
  <resources>
-  <include location="rc.qrc"/>
+  <include location="../rc.qrc"/>
  </resources>
  <connections/>
 </ui>

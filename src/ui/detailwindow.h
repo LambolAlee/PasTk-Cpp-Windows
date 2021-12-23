@@ -37,17 +37,13 @@ private:
     DataModel *model;
     bool textCanCopy = false;
     QModelIndexList selection;
-    QMenu *context;
 
     void displayData(const QModelIndex &index);
     void displayData();
     void copySelected();
     bool commit();
     void resetPos();
-    bool removeData();
-    bool addData();
-    void initContextMenu();
-    void copyItem();
+    void updateText(const QModelIndexList &);
 };
 
 #endif // DETAILWINDOW_H
