@@ -1,0 +1,15 @@
+<RCC>
+    <qresource prefix="/">
+        <file>font/Pro Display tfb.ttf</file>
+        <file>icons/add.svg</file>
+        <file>icons/browse.svg</file>
+        <file>icons/close.svg</file>
+        <file>icons/complete.svg</file>
+        <file>icons/copy.svg</file>
+        <file>icons/minus.svg</file>
+        <file>icons/setting.svg</file>
+        <file>icons/setting-noHover.svg</file>
+        <file>icons/sign-out.svg</file>
+        <file>logo/PasTk_logo.ico</file>
+    </qresource>
+</RCC>

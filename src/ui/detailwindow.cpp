@@ -18,6 +18,9 @@ DetailWindow::DetailWindow(DataModel *model, QWidget *parent) :
     ui->previewList->setModel(model);
     ItemDelegate *d = new ItemDelegate(ItemDelegate::UserSizeHintRole::DetailItemSizeHint, ui->previewList);
     ui->previewList->setItemDelegate(d);
+    ui->previewList->setMovement(QListView::Snap);
+    ui->previewList->setAcceptDrops(true);
+    ui->previewList->setDragDropMode(QAbstractItemView::InternalMove);
 
     connect(ui->quitButton, &QPushButton::clicked, this, &DetailWindow::close);
     connect(ui->previewList, &QListView::clicked, this, [=](const QModelIndex &index){ displayData(index); });

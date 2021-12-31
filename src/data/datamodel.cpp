@@ -2,6 +2,7 @@
 #include <algorithm>
 #include <QSize>
 #include <QToolTip>
+#include <QIODevice>
 
 
 DataModel::DataModel(QObject *parent)
@@ -25,9 +26,9 @@ QVariant DataModel::data(const QModelIndex &index, int role) const
         return item.toString().simplified();
     } else if (role == Qt::ToolTipRole || role == Qt::UserRole) {
         if (item.isNewFish())
-            return "";
+            return QVariant();
         else
-            return item.toString();
+            return item.data();
     }
     else
         return QVariant();
@@ -88,4 +89,94 @@ void DataModel::clearUnusedNewItems()
 void DataModel::removeNewFishFlag(Item &i)
 {
     i.setNewFish(false);
+}
+
+Qt::DropActions DataModel::supportedDropActions() const
+{
+    return Qt::CopyAction | Qt::MoveAction;
+}
+
+Qt::ItemFlags DataModel::flags(const QModelIndex &index) const
+{
+    Qt::ItemFlags defaultFlags = QAbstractListModel::flags(index);
+
+    if (index.isValid())
+        return Qt::ItemIsDragEnabled | Qt::ItemIsDropEnabled | defaultFlags;
+    else
+        return Qt::ItemIsDropEnabled | defaultFlags;
+}
+
+QStringList DataModel::mimeTypes() const
+{
+    QStringList types;
+    types << "application/vnd.text.list";
+    return types;
+}
+
+QMimeData *DataModel::mimeData(const QModelIndexList &indexes) const
+{
+    QMimeData *mimeData = new QMimeData;
+    QByteArray encodedData;
+
+    QDataStream stream(&encodedData, QIODevice::WriteOnly);
+
+    for (const QModelIndex &index : indexes) {
+        if (index.isValid()) {
+            QString text = data(index, Qt::UserRole).toString();
+            stream << text;
+        }
+    }
+
+    mimeData->setData("application/vnd.text.list", encodedData);
+    return mimeData;
+}
+
+bool DataModel::canDropMimeData(const QMimeData *data, Qt::DropAction action, int row, int column, const QModelIndex &parent) const
+{
+    Q_UNUSED(action)
+    Q_UNUSED(row)
+    Q_UNUSED(parent)
+
+    if (!data->hasFormat("application/vnd.text.list"))
+        return false;
+    if (column > 0)
+        return false;
+    return true;
+}
+
+bool DataModel::dropMimeData(const QMimeData *data, Qt::DropAction action, int row, int column, const QModelIndex &parent)
+{
+    if (!canDropMimeData(data, action, row, column, parent))
+        return false;
+    if (action == Qt::IgnoreAction)
+        return true;
+
+    int beginRow;
+    if (row != -1)
+        beginRow = row;
+    else if (parent.isValid())
+        beginRow = parent.row();
+    else
+        beginRow = rowCount();
+
+    QByteArray encodedData = data->data("application/vnd.text.list");
+    QDataStream stream(&encodedData, QIODevice::ReadOnly);
+    QStringList newItems;
+    int rows = 0;
+
+    while (!stream.atEnd()) {
+        QString text;
+        stream >> text;
+        newItems << text;
+        ++rows;
+    }
+
+    insertRows(beginRow, rows, QModelIndex());
+    for (const QString &text : qAsConst(newItems)) {
+        QModelIndex idx = index(beginRow, 0, QModelIndex());
+        setData(idx, text);
+        beginRow++;
+    }
+
+    return true;
 }

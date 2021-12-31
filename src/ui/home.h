@@ -8,11 +8,12 @@
 #include "detailwindow.h"
 #include "utils/pasteutil.h"
 #include "utils/shiftclickobserver.h"
+#include "utils/buttonstatewatcher.h"
 #include <QSettings>
 #include <QLabel>
 #include <QSystemTrayIcon>
 #include <QHotkey>
-#include <QToolButton>
+#include <QPushButton>
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }
@@ -66,8 +67,9 @@ private:
     bool directQuitFlag = false;
     QMenu *trayMenu;
     bool firstHide = true;
-    QToolButton *settingButton;
+    QPushButton *settingButton;
     ShiftClickObserver *obs;
+    ButtonStateWatcher *b_obs;
 
     void startWatch();
     void stopWatch();

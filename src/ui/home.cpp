@@ -22,7 +22,7 @@ Home::Home(QWidget *parent)
     setWindowFlags(Qt::WindowStaysOnTopHint);
     setWindowFlags(windowFlags() & ~Qt::WindowMaximizeButtonHint);
     setFixedSize(this->width(), this->height());
-    setWindowIcon(QIcon(":/resources/logo/PasTk_logo.ico"));
+    setWindowIcon(QIcon(":/logo/PasTk_logo.ico"));
     settings = new QSettings("./conf.ini", QSettings::IniFormat);
     initStatusBar();
     createToolbar();
@@ -43,11 +43,17 @@ Home::~Home()
 void Home::initStatusBar()
 {
     modeLabel = new QLabel(this);
-    settingButton = new QToolButton(this);
+    settingButton = new QPushButton(this);
+    settingButton->setObjectName("settingButton");
+    settingButton->setFocusPolicy(Qt::NoFocus);
     settingButton->setStyleSheet("background:transparent;");
-    QIcon icon;
-    icon.addFile(QString::fromUtf8(":/resources/icons/setting.svg"), QSize(), QIcon::Normal, QIcon::Off);
+    QIcon icon, icon1;
+    icon.addFile(QString::fromUtf8(":/icons/setting-noHover.svg"), QSize(), QIcon::Normal, QIcon::Off);
+    icon1.addFile(QString::fromUtf8(":/icons/setting.svg"), QSize(), QIcon::Normal, QIcon::Off);
     settingButton->setIcon(icon);
+    b_obs = new ButtonStateWatcher(this);
+    b_obs->setStateIcon(icon, icon1);
+    settingButton->installEventFilter(b_obs);
     modeLabel->setStyleSheet("color:#646464;");
     ui->statusBar->addWidget(modeLabel);
     ui->statusBar->addPermanentWidget(settingButton);
@@ -93,13 +99,13 @@ void Home::initSysTray()
     QAction *showAction = trayMenu->addAction("Show", this, [=]{ if (!isVisible()) show(); });
     QAction *exitAction = trayMenu->addAction("Exit", this, &Home::quitDirectly);
     QIcon icon;
-    icon.addFile(QString::fromUtf8(":/resources/icons/browse.svg"), QSize(), QIcon::Normal, QIcon::Off);
+    icon.addFile(QString::fromUtf8(":/icons/browse.svg"), QSize(), QIcon::Normal, QIcon::Off);
     showAction->setIcon(icon);
     QIcon icon1;
-    icon1.addFile(QString::fromUtf8(":/resources/icons/sign-out.svg"), QSize(), QIcon::Normal, QIcon::Off);
+    icon1.addFile(QString::fromUtf8(":/icons/sign-out.svg"), QSize(), QIcon::Normal, QIcon::Off);
     exitAction->setIcon(icon1);
 
-    tray = new QSystemTrayIcon(QIcon(":/resources/logo/PasTk_logo.ico"), this);
+    tray = new QSystemTrayIcon(QIcon(":/logo/PasTk_logo.ico"), this);
     tray->setToolTip("PasTk-Cpp");
     tray->setContextMenu(trayMenu);
     connect(tray, &QSystemTrayIcon::activated, this, &Home::handleTrayActivated);
@@ -236,8 +242,8 @@ void Home::updateDigital()
     int size = _data.size();
     int basic = size % 10;
     int tens = (size - basic) / 10;
-    ui->baseLCD->display(basic);
-    ui->tenLCD->display(tens);
+    ui->baseLCD->setText(QString::number(basic));
+    ui->tenLCD->setText(QString::number(tens));
 }
 
 void Home::startWatch()

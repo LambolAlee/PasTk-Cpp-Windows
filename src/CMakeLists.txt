@@ -33,7 +33,7 @@ set(PROJECT_SOURCES
         data/dataadapter.h
         data/dataadapter.cpp
 
-        rc.qrc
+        resources/rc.qrc
 
         data/item.h
         data/item.cpp
@@ -48,6 +48,9 @@ set(PROJECT_SOURCES
 
         utils/shiftclickobserver.h
         utils/shiftclickobserver.cpp
+
+        utils/buttonstatewatcher.h
+        utils/buttonstatewatcher.cpp
 
         ui/mergedialog.h
         ui/mergedialog.cpp

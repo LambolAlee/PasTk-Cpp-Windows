@@ -76,7 +76,7 @@
         </property>
         <property name="maximumSize">
          <size>
-          <width>200</width>
+          <width>210</width>
           <height>16777215</height>
          </size>
         </property>
@@ -87,6 +87,30 @@
         </property>
         <property name="contextMenuPolicy">
          <enum>Qt::DefaultContextMenu</enum>
+        </property>
+        <property name="frameShadow">
+         <enum>QFrame::Plain</enum>
+        </property>
+        <property name="horizontalScrollBarPolicy">
+         <enum>Qt::ScrollBarAlwaysOff</enum>
+        </property>
+        <property name="editTriggers">
+         <set>QAbstractItemView::NoEditTriggers</set>
+        </property>
+        <property name="dragEnabled">
+         <bool>true</bool>
+        </property>
+        <property name="dragDropMode">
+         <enum>QAbstractItemView::DropOnly</enum>
+        </property>
+        <property name="defaultDropAction">
+         <enum>Qt::MoveAction</enum>
+        </property>
+        <property name="alternatingRowColors">
+         <bool>true</bool>
+        </property>
+        <property name="selectionMode">
+         <enum>QAbstractItemView::ExtendedSelection</enum>
         </property>
         <property name="movement">
          <enum>QListView::Static</enum>
@@ -132,8 +156,8 @@
            <string>plus</string>
           </property>
           <property name="icon">
-           <iconset resource="../rc.qrc">
-            <normaloff>:/resources/icons/add.svg</normaloff>:/resources/icons/add.svg</iconset>
+           <iconset resource="../resources/rc.qrc">
+            <normaloff>:/icons/add.svg</normaloff>:/icons/add.svg</iconset>
           </property>
          </widget>
         </item>
@@ -161,8 +185,8 @@
            <string>minus</string>
           </property>
           <property name="icon">
-           <iconset resource="../rc.qrc">
-            <normaloff>:/resources/icons/minus.svg</normaloff>:/resources/icons/minus.svg</iconset>
+           <iconset resource="../resources/rc.qrc">
+            <normaloff>:/icons/minus.svg</normaloff>:/icons/minus.svg</iconset>
           </property>
          </widget>
         </item>
@@ -190,8 +214,8 @@
            <string>copy</string>
           </property>
           <property name="icon">
-           <iconset resource="../rc.qrc">
-            <normaloff>:/resources/icons/copy.svg</normaloff>:/resources/icons/copy.svg</iconset>
+           <iconset resource="../resources/rc.qrc">
+            <normaloff>:/icons/copy.svg</normaloff>:/icons/copy.svg</iconset>
           </property>
          </widget>
         </item>
@@ -219,8 +243,8 @@
            <string>complete</string>
           </property>
           <property name="icon">
-           <iconset resource="../rc.qrc">
-            <normaloff>:/resources/icons/complete.svg</normaloff>:/resources/icons/complete.svg</iconset>
+           <iconset resource="../resources/rc.qrc">
+            <normaloff>:/icons/complete.svg</normaloff>:/icons/complete.svg</iconset>
           </property>
          </widget>
         </item>
@@ -261,8 +285,8 @@
            <string>Q</string>
           </property>
           <property name="icon">
-           <iconset resource="../rc.qrc">
-            <normaloff>:/resources/icons/close.svg</normaloff>:/resources/icons/close.svg</iconset>
+           <iconset resource="../resources/rc.qrc">
+            <normaloff>:/icons/close.svg</normaloff>:/icons/close.svg</iconset>
           </property>
          </widget>
         </item>
@@ -297,7 +321,7 @@
   </customwidget>
  </customwidgets>
  <resources>
-  <include location="../rc.qrc"/>
+  <include location="../resources/rc.qrc"/>
  </resources>
  <connections/>
 </ui>
