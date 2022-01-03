@@ -21,6 +21,7 @@ Home::Home(QWidget *parent)
     resetPos();
     setWindowFlags(Qt::WindowStaysOnTopHint);
     setWindowFlags(windowFlags() & ~Qt::WindowMaximizeButtonHint);
+    setAttribute(Qt::WA_Hover, true);
     setFixedSize(this->width(), this->height());
     setWindowIcon(QIcon(":/logo/PasTk_logo.ico"));
     settings = new QSettings("./conf.ini", QSettings::IniFormat);
@@ -32,6 +33,9 @@ Home::Home(QWidget *parent)
     ui->startButton->setStyleSheet("#startButton{border-radius:8px; border:none; background:#d9ded9;}"
                                    "#startButton:hover{font-size:14px;}"
                                    "#startButton:pressed{background:#d7d7cb; font-size:13px;}");
+    ui->stackedWidget->setStyleSheet("background:white;");
+    ui->menuBar->setStyleSheet("background:#d2e4da;");
+    ui->statusBar->setStyleSheet("background:white;");
     opacWatcher = new OpacityWatcher(this);
     installEventFilter(opacWatcher);
     connect(ui->startButton, &QPushButton::clicked, this, &Home::start);
@@ -271,6 +275,7 @@ void Home::stopWatch()
 
 void Home::callDetail()
 {
+    opacWatcher->stop();
     if (!detailW) {
         //qDebug() << "Create new instance!";
         detailW = new DetailWindow(model, this);
@@ -278,6 +283,7 @@ void Home::callDetail()
     }
     stopWatch();
     detailW->showWindow();
+    opacWatcher->start();
 }
 
 void Home::reset()

@@ -39,12 +39,12 @@ bool OpacityWatcher::eventFilter(QObject *obj, QEvent *event)
 
 bool OpacityWatcher::isMouseGoBack(QMainWindow *win, QEvent *event)
 {
-    return (event->type() == QEvent::Enter && win->isActiveWindow() || event->type() == QEvent::MouseButtonRelease);
+    return (event->type() == QEvent::HoverEnter && win->isActiveWindow() || event->type() == QEvent::MouseButtonRelease);
 }
 
 bool OpacityWatcher::isMouseLeft(QMainWindow *win, QEvent *event)
 {
-    return (event->type() == QEvent::Leave);
+    return (event->type() == QEvent::HoverLeave);
 }
 
 void OpacityWatcher::startAnimating()
