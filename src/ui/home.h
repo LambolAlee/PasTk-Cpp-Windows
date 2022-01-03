@@ -9,6 +9,7 @@
 #include "utils/pasteutil.h"
 #include "utils/shiftclickobserver.h"
 #include "utils/buttonstatewatcher.h"
+#include "utils/opacitywatcher.h"
 #include <QSettings>
 #include <QLabel>
 #include <QSystemTrayIcon>
@@ -68,8 +69,10 @@ private:
     QMenu *trayMenu;
     bool firstHide = true;
     QPushButton *settingButton;
+
     ShiftClickObserver *obs;
     ButtonStateWatcher *b_obs;
+    OpacityWatcher *opacWatcher;
 
     void startWatch();
     void stopWatch();

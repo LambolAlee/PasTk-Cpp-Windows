@@ -1,12 +1,10 @@
 #include "ui/home.h"
 #include <QHotkey>
-//#include <SingleApplication>
-
-#include <QApplication>
+#include <SingleApplication>
 
 int main(int argc, char *argv[])
 {
-    QApplication a(argc, argv);
+    SingleApplication a(argc, argv);
     a.setOrganizationName("lambol");
     a.setOrganizationDomain("lambol.pastk");
     a.setApplicationName("PasTk-Cpp");
@@ -16,6 +14,8 @@ int main(int argc, char *argv[])
     QHotkey hotkey(QKeySequence("Ctrl+/"), true, &a);
     qDebug() << "Is segistered:" << hotkey.isRegistered();
     w.setHotkey(&hotkey);
+
+    QObject::connect(&a, &SingleApplication::instanceStarted, [&w]{w.show();});
 
     w.show();
     return a.exec();

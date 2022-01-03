@@ -52,6 +52,9 @@ set(PROJECT_SOURCES
         utils/buttonstatewatcher.h
         utils/buttonstatewatcher.cpp
 
+        utils/opacitywatcher.h
+        utils/opacitywatcher.cpp
+
         ui/mergedialog.h
         ui/mergedialog.cpp
         ui/mergedialog.ui
@@ -78,6 +81,7 @@ set(PROJECT_SOURCES
 include(FetchContent)
 
 set(QT_DEFAULT_MAJOR_VERSION 6)
+
 option(QHOTKEY_INSTALL OFF)
 FetchContent_Declare(QHotkey
     GIT_REPOSITORY https://github.com/Skycoder42/QHotkey

@@ -21,8 +21,10 @@ void DataAdapter::removeData()
 {
     auto s = list->selectionModel();
     auto i = s->selectedRows();
-    if (!i.isEmpty())
-        list->model()->removeRow(i.at(0).row());
+    if (i.isEmpty()) return;
+    auto rend = i.crend();
+    for (auto riter = i.rbegin(); riter != rend; ++riter)
+        list->model()->removeRow(riter->row());
     emit dataRemovedSignal(s->selectedRows());
 }
 

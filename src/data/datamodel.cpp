@@ -100,6 +100,10 @@ Qt::ItemFlags DataModel::flags(const QModelIndex &index) const
 {
     Qt::ItemFlags defaultFlags = QAbstractListModel::flags(index);
 
+    Item &i = _data.getAt(index);
+    if (i.isNewFish())
+        return defaultFlags;
+
     if (index.isValid())
         return Qt::ItemIsDragEnabled | Qt::ItemIsDropEnabled | defaultFlags;
     else

@@ -1,7 +1,7 @@
 #include "home.h"
 #include "ui_home.h"
-#include "detailwindow.h"
 
+#include "detailwindow.h"
 #include "mergedialog.h"
 #include "continuousdialog.h"
 #include "selectiondialog.h"
@@ -29,6 +29,11 @@ Home::Home(QWidget *parent)
     initSysTray();
     model = new DataModel(this);
     ui->stackedWidget->setDuration(200);
+    ui->startButton->setStyleSheet("#startButton{border-radius:8px; border:none; background:#d9ded9;}"
+                                   "#startButton:hover{font-size:14px;}"
+                                   "#startButton:pressed{background:#d7d7cb; font-size:13px;}");
+    opacWatcher = new OpacityWatcher(this);
+    installEventFilter(opacWatcher);
     connect(ui->startButton, &QPushButton::clicked, this, &Home::start);
     connect(model, &DataModel::updateLcdNumber, this, &Home::updateDigital);
 }
@@ -46,7 +51,8 @@ void Home::initStatusBar()
     settingButton = new QPushButton(this);
     settingButton->setObjectName("settingButton");
     settingButton->setFocusPolicy(Qt::NoFocus);
-    settingButton->setStyleSheet("background:transparent;");
+    settingButton->setStyleSheet("#settingButton{background:transparent; border-style:none; padding:3px;}"
+                                 "#settingButton:pressed{background:#e1e1e1;}");
     QIcon icon, icon1;
     icon.addFile(QString::fromUtf8(":/icons/setting-noHover.svg"), QSize(), QIcon::Normal, QIcon::Off);
     icon1.addFile(QString::fromUtf8(":/icons/setting.svg"), QSize(), QIcon::Normal, QIcon::Off);
@@ -180,6 +186,8 @@ void Home::continueToRun()
         ui->statusBar->showMessage("No data to paste...", 1500);
         return;
     }
+
+    opacWatcher->stop();
     if (settings->value("attention_remind", true).toBool()) {
         AttentionDialog dialog(this);
         dialog.exec();
@@ -210,6 +218,7 @@ void Home::continueToRun()
         }
     }
     show();
+    opacWatcher->start();
 }
 
 void Home::setMode(QAction *action)
@@ -290,8 +299,11 @@ void Home::hideAndShow()
 {
     if (isVisible())
         hideHome();
-    else
+    else {
+        if (windowOpacity() != 1.0)
+            setWindowOpacity(1.0);
         show();
+    }
 }
 
 void Home::hideHome()
