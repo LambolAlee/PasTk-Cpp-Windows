@@ -174,6 +174,7 @@ void Home::start()
 {
     status = !status;
     if (status) {   // 启动复制监听
+        opacWatcher->stop();
         ui->startButton->setText("Over");
         startWatch();
     } else {        // 关闭复制监听
@@ -181,6 +182,7 @@ void Home::start()
         stopWatch();
         continueToRun();
         clearData();
+        opacWatcher->start();
     }
 }
 
@@ -191,7 +193,6 @@ void Home::continueToRun()
         return;
     }
 
-    opacWatcher->stop();
     if (settings->value("attention_remind", true).toBool()) {
         AttentionDialog dialog(this);
         dialog.exec();
@@ -222,7 +223,6 @@ void Home::continueToRun()
         }
     }
     show();
-    opacWatcher->start();
 }
 
 void Home::setMode(QAction *action)

@@ -100,13 +100,9 @@ Qt::ItemFlags DataModel::flags(const QModelIndex &index) const
 {
     Qt::ItemFlags defaultFlags = QAbstractListModel::flags(index);
 
-    Item &i = _data.getAt(index);
-    if (i.isNewFish())
-        return defaultFlags;
-
-    if (index.isValid())
+    if (index.isValid()) {
         return Qt::ItemIsDragEnabled | Qt::ItemIsDropEnabled | defaultFlags;
-    else
+    } else
         return Qt::ItemIsDropEnabled | defaultFlags;
 }
 
@@ -178,8 +174,10 @@ bool DataModel::dropMimeData(const QMimeData *data, Qt::DropAction action, int r
     insertRows(beginRow, rows, QModelIndex());
     for (const QString &text : qAsConst(newItems)) {
         QModelIndex idx = index(beginRow, 0, QModelIndex());
-        setData(idx, text);
         beginRow++;
+        if (text.isEmpty())
+            continue;
+        setData(idx, text);
     }
 
     return true;
