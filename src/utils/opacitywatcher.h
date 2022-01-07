@@ -4,7 +4,7 @@
 #include <QObject>
 #include <QTimer>
 #include <QEvent>
-#include <QMainWindow>
+#include <QWidget>
 #include <QPropertyAnimation>
 
 class OpacityWatcher : public QObject
@@ -25,8 +25,8 @@ private:
     bool stopFilter = false;
     QPropertyAnimation *animator;
 
-    bool isMouseGoBack(QMainWindow *win, QEvent *event);
-    bool isMouseLeft(QMainWindow *win, QEvent *event);
+    bool isMouseGoBack(QWidget *win, QEvent *event);
+    bool isMouseLeft(QWidget *win, QEvent *event);
     void startAnimating();
 
     void initAnimator(QObject *parent);

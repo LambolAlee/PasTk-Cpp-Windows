@@ -1,6 +1,10 @@
-#include "ui/home.h"
+//#include "ui/home.h"
 #include <QHotkey>
 #include <SingleApplication>
+#include <QFontDatabase>
+
+#include "ui/windowhome.h"
+
 
 int main(int argc, char *argv[])
 {
@@ -9,13 +13,13 @@ int main(int argc, char *argv[])
     a.setOrganizationDomain("lambol.pastk");
     a.setApplicationName("PasTk-Cpp");
 
-    Home w;
+    QFontDatabase::addApplicationFont(":/font/Pro Display tfb.ttf");
 
-    QHotkey hotkey(QKeySequence("Ctrl+/"), true, &a);
-    qDebug() << "Is segistered:" << hotkey.isRegistered();
-    w.setHotkey(&hotkey);
+    QHotkey hotkey(QKeySequence("Ctrl+Alt+Q"), true, &a);
+    QObject::connect(&hotkey, &QHotkey::activated, qApp, [&](){
+            qDebug() << "Hotkey Activated - the application will quit now";});
 
-    QObject::connect(&a, &SingleApplication::instanceStarted, [&w]{w.show();});
+    WindowHome w;
 
     w.show();
     return a.exec();

@@ -18,28 +18,25 @@ Home::Home(QWidget *parent)
     , _sep(new QString)
 {
     ui->setupUi(this);
-    resetPos();
-    setWindowFlags(Qt::WindowStaysOnTopHint);
-    setWindowFlags(windowFlags() & ~Qt::WindowMaximizeButtonHint);
-    setAttribute(Qt::WA_Hover, true);
-    setFixedSize(this->width(), this->height());
-    setWindowIcon(QIcon(":/logo/PasTk_logo.ico"));
+    setWindowFlag(Qt::Widget);
+
+    setFixedSize(this->width(), 128);
     settings = new QSettings("./conf.ini", QSettings::IniFormat);
+
     initStatusBar();
     createToolbar();
-    initSysTray();
     model = new DataModel(this);
     ui->stackedWidget->setDuration(200);
-    ui->startButton->setStyleSheet("#startButton{border-radius:8px; border:none; background:#d9ded9;}"
+    ui->startButton->setStyleSheet("#startButton{border-radius:8px; border:none; background:#d2e4da;}"// #d9ded9
                                    "#startButton:hover{font-size:14px;}"
                                    "#startButton:pressed{background:#d7d7cb; font-size:13px;}");
     ui->stackedWidget->setStyleSheet("background:white;");
-    ui->menuBar->setStyleSheet("background:#d2e4da;");
+    ui->menuBar->setStyleSheet("QMenuBar{background:#d2e4da;}");
     ui->statusBar->setStyleSheet("background:white;");
-    opacWatcher = new OpacityWatcher(this);
-    installEventFilter(opacWatcher);
+
     connect(ui->startButton, &QPushButton::clicked, this, &Home::start);
     connect(model, &DataModel::updateLcdNumber, this, &Home::updateDigital);
+    connect(this, &Home::startCopySig, &Home::start);
 }
 
 Home::~Home()
@@ -52,21 +49,8 @@ Home::~Home()
 void Home::initStatusBar()
 {
     modeLabel = new QLabel(this);
-    settingButton = new QPushButton(this);
-    settingButton->setObjectName("settingButton");
-    settingButton->setFocusPolicy(Qt::NoFocus);
-    settingButton->setStyleSheet("#settingButton{background:transparent; border-style:none; padding:3px;}"
-                                 "#settingButton:pressed{background:#e1e1e1;}");
-    QIcon icon, icon1;
-    icon.addFile(QString::fromUtf8(":/icons/setting-noHover.svg"), QSize(), QIcon::Normal, QIcon::Off);
-    icon1.addFile(QString::fromUtf8(":/icons/setting.svg"), QSize(), QIcon::Normal, QIcon::Off);
-    settingButton->setIcon(icon);
-    b_obs = new ButtonStateWatcher(this);
-    b_obs->setStateIcon(icon, icon1);
-    settingButton->installEventFilter(b_obs);
     modeLabel->setStyleSheet("color:#646464;");
     ui->statusBar->addWidget(modeLabel);
-    ui->statusBar->addPermanentWidget(settingButton);
 }
 
 void Home::createToolbar()
@@ -97,69 +81,10 @@ void Home::createToolbar()
     ui->menuBar->addAction("About", this, &Home::switchPage);
     ui->menuBar->addAction("Detail", this, &Home::callDetail);
     ui->menuBar->addAction("Reset", this, &Home::reset);
-    ui->menuBar->addAction("Exit", this, &Home::close);
+    ui->menuBar->addAction("Exit", this, &Home::windowClose);
     obs = new ShiftClickObserver(this);
     ui->menuBar->installEventFilter(obs);
-    connect(obs, &ShiftClickObserver::shiftClicked, this, &Home::quitDirectly);
-}
-
-void Home::initSysTray()
-{
-    QMenu *trayMenu = new QMenu(this);
-    QAction *showAction = trayMenu->addAction("Show", this, [=]{ if (!isVisible()) show(); });
-    QAction *exitAction = trayMenu->addAction("Exit", this, &Home::quitDirectly);
-    QIcon icon;
-    icon.addFile(QString::fromUtf8(":/icons/browse.svg"), QSize(), QIcon::Normal, QIcon::Off);
-    showAction->setIcon(icon);
-    QIcon icon1;
-    icon1.addFile(QString::fromUtf8(":/icons/sign-out.svg"), QSize(), QIcon::Normal, QIcon::Off);
-    exitAction->setIcon(icon1);
-
-    tray = new QSystemTrayIcon(QIcon(":/logo/PasTk_logo.ico"), this);
-    tray->setToolTip("PasTk-Cpp");
-    tray->setContextMenu(trayMenu);
-    connect(tray, &QSystemTrayIcon::activated, this, &Home::handleTrayActivated);
-    tray->show();
-}
-
-void Home::handleTrayActivated(QSystemTrayIcon::ActivationReason reason)
-{
-    switch (reason) {
-    case (QSystemTrayIcon::DoubleClick):
-        if (!isVisible())
-            show();
-        break;
-    default:
-        break;
-    }
-}
-
-void Home::setHotkey(QHotkey *hk)
-{
-    hotkey = hk;
-    connect(hk, &QHotkey::activated, this, &Home::hideAndShow);
-}
-
-void Home::closeEvent(QCloseEvent *event)
-{
-    if (directQuitFlag)
-        event->accept();
-    else if (settings->value("hide_to_system_tray", false).toBool()) {
-        hide();
-        event->ignore();
-    } else {
-        AttentionDialog dialog;
-        dialog.setTextWithSetting("Do you want to hide to the system tray rather than quit directly", "hide_to_system_tray");
-        switch (dialog.exec()) {
-        case (QDialog::Accepted):
-            hideHome();
-            event->ignore();
-            break;
-        case (QDialog::Rejected):
-            event->accept();
-            break;
-        }
-    }
+    connect(obs, &ShiftClickObserver::shiftClicked, this, &Home::windowCloseForced);
 }
 
 void Home::switchPage()
@@ -174,7 +99,7 @@ void Home::start()
 {
     status = !status;
     if (status) {   // 启动复制监听
-        opacWatcher->stop();
+        stopOpacAnimation();
         ui->startButton->setText("Over");
         startWatch();
     } else {        // 关闭复制监听
@@ -182,7 +107,7 @@ void Home::start()
         stopWatch();
         continueToRun();
         clearData();
-        opacWatcher->start();
+        startOpacAnimation();
     }
 }
 
@@ -197,7 +122,7 @@ void Home::continueToRun()
         AttentionDialog dialog(this);
         dialog.exec();
     }
-    hide();
+    hideWindowHome();
     switch (_mode) {
         case MERGE: {
             MergeDialog md(_sep, this);
@@ -222,7 +147,7 @@ void Home::continueToRun()
             break;
         }
     }
-    show();
+    showWindowHome();
 }
 
 void Home::setMode(QAction *action)
@@ -275,7 +200,7 @@ void Home::stopWatch()
 
 void Home::callDetail()
 {
-    opacWatcher->stop();
+    stopOpacAnimation();
     if (!detailW) {
         //qDebug() << "Create new instance!";
         detailW = new DetailWindow(model, this);
@@ -283,7 +208,7 @@ void Home::callDetail()
     }
     stopWatch();
     detailW->showWindow();
-    opacWatcher->start();
+    startOpacAnimation();
 }
 
 void Home::reset()
@@ -292,31 +217,4 @@ void Home::reset()
     stopWatch();
     clearData();
     ui->startButton->setText("Start");
-}
-
-void Home::resetPos()
-{
-    QScreen *screen = QApplication::primaryScreen();
-    QRect geometry = screen->availableGeometry();
-    move((geometry.width()-width())/2, 0);
-}
-
-void Home::hideAndShow()
-{
-    if (isVisible())
-        hideHome();
-    else {
-        if (windowOpacity() != 1.0)
-            setWindowOpacity(1.0);
-        show();
-    }
-}
-
-void Home::hideHome()
-{
-    hide();
-    if (Q_UNLIKELY(firstHide)) {
-        firstHide = false;
-        tray->showMessage("PasTk-Cpp", "I'm in your system tray~");
-    }
 }

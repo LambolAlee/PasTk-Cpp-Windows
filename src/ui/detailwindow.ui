@@ -186,7 +186,7 @@
           </property>
           <property name="icon">
            <iconset resource="../resources/rc.qrc">
-            <normaloff>:/icons/minus.svg</normaloff>:/icons/minus.svg</iconset>
+            <normaloff>:/icons/ashbin.svg</normaloff>:/icons/ashbin.svg</iconset>
           </property>
          </widget>
         </item>

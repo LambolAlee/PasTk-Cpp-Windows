@@ -8,8 +8,6 @@
 #include "detailwindow.h"
 #include "utils/pasteutil.h"
 #include "utils/shiftclickobserver.h"
-#include "utils/buttonstatewatcher.h"
-#include "utils/opacitywatcher.h"
 #include <QSettings>
 #include <QLabel>
 #include <QSystemTrayIcon>
@@ -35,7 +33,23 @@ public:
         SELECT,
     };
 
-    void setHotkey(QHotkey *hk);
+    enum Direction {
+        LEFT,
+        RIGHT,
+        TOP,
+        FREE,
+    };
+
+    inline QSettings *getSettings() { return settings; }
+
+signals:
+    void windowClose();
+    void windowCloseForced();
+    void opacStopSig();
+    void opacStartSig();
+    void hideWindowSig();
+    void showWindowSig();
+    void startCopySig();
 
 private slots:
     void start();
@@ -43,12 +57,7 @@ private slots:
     void updateDigital();
     void setMode(QAction *);
     void switchPage();
-    void hideAndShow();
-    void handleTrayActivated(QSystemTrayIcon::ActivationReason);
     inline void quitDirectly(){ directQuitFlag = true; close(); }
-
-private:
-    void closeEvent(QCloseEvent *event) override;
 
 private:
     Ui::MainWindow *ui;
@@ -63,16 +72,12 @@ private:
     QSettings *settings;
     QString *_sep;
     QString old;
-    QSystemTrayIcon *tray;
     QHotkey *hotkey;
     bool directQuitFlag = false;
     QMenu *trayMenu;
-    bool firstHide = true;
     QPushButton *settingButton;
 
     ShiftClickObserver *obs;
-    ButtonStateWatcher *b_obs;
-    OpacityWatcher *opacWatcher;
 
     void startWatch();
     void stopWatch();
@@ -84,9 +89,10 @@ private:
     }
     void createToolbar();
     void initStatusBar();
-    void initSysTray();
-    void resetPos();
     void continueToRun();
-    void hideHome();
+    inline void stopOpacAnimation() { emit opacStopSig(); }
+    inline void startOpacAnimation() { emit opacStartSig(); }
+    inline void showWindowHome() { emit showWindowSig(); }
+    inline void hideWindowHome() { emit hideWindowSig(); }
 };
 #endif // HOME_H

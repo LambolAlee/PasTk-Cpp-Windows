@@ -24,33 +24,32 @@ void OpacityWatcher::stopAnimating()
 
 bool OpacityWatcher::eventFilter(QObject *obj, QEvent *event)
 {
+    if (stopFilter) return QObject::eventFilter(obj, event);
     //qDebug() << event->type();
-    if (stopFilter) return false;
-
-    QMainWindow *win = static_cast<QMainWindow*>(obj);
+    QWidget *win = static_cast<QWidget*>(obj);
     if (isMouseGoBack(win, event)) {
         stopAnimating();
         if (timer->isActive())
             timer->stop();
         if (win->windowOpacity() != 1)
             win->setWindowOpacity(1);
-    } else if (isMouseLeft(win, event))
+    } else if (isMouseLeft(win, event)) {
         timer->start();
+    }
 
-    return false;
+    return QObject::eventFilter(obj, event);
 }
 
-bool OpacityWatcher::isMouseGoBack(QMainWindow *win, QEvent *event)
+bool OpacityWatcher::isMouseGoBack(QWidget *win, QEvent *event)
 {
-    bool windowMoved = event->type() == QEvent::Move;
     bool windowHovered = event->type() == QEvent::HoverEnter;
-    bool mouseClicked = event->type() == QEvent::MouseButtonRelease;
-    return (windowHovered || mouseClicked || windowMoved);
+    return windowHovered;
 }
 
-bool OpacityWatcher::isMouseLeft(QMainWindow *win, QEvent *event)
+bool OpacityWatcher::isMouseLeft(QWidget *win, QEvent *event)
 {
-    return (event->type() == QEvent::HoverLeave);
+    bool leftWindow = event->type() == QEvent::HoverLeave;
+    return leftWindow;
 }
 
 void OpacityWatcher::startAnimating()

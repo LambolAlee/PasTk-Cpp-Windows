@@ -20,6 +20,9 @@ set(PROJECT_SOURCES
         ui/home.h
         ui/home.ui
 
+        ui/windowhome.h
+        ui/windowhome.cpp
+
         data/data.h
         data/data.cpp
 
@@ -44,6 +47,10 @@ set(PROJECT_SOURCES
         widgets/listviewofme.h
         widgets/listviewofme.cpp
 
+        widgets/titlebarofme.h
+        widgets/titlebarofme.cpp
+        widgets/titlebarofme.ui
+
         utils/singleton.hpp
 
         utils/shiftclickobserver.h
@@ -54,6 +61,9 @@ set(PROJECT_SOURCES
 
         utils/opacitywatcher.h
         utils/opacitywatcher.cpp
+
+        utils/windowx.h
+        utils/windowx.cpp
 
         ui/mergedialog.h
         ui/mergedialog.cpp
