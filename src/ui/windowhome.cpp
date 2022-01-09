@@ -13,7 +13,7 @@ WindowHome::WindowHome(QWidget *parent)
     setContentWidget(home);
     home->setParent(this);
 
-    resetPos(); // some problem ???
+    resetPos();
 
     opacWatcher = new OpacityWatcher(this);
     installEventFilter(opacWatcher);
@@ -26,6 +26,8 @@ WindowHome::WindowHome(QWidget *parent)
     connect(home, &Home::opacStartSig, this, [=]{ opacWatcher->start(); });
     connect(home, &Home::opacStopSig, this, [=]{ opacWatcher->stop(); });
     connect(title, &TitleBarOfMe::minimizeSig, this, &WindowHome::showMinimized);
+    connect(home, &Home::hideWindowSig, this, &WindowHome::hide);
+    connect(home, &Home::showWindowSig, this, &WindowHome::show);
 }
 
 WindowHome::~WindowHome()
@@ -38,8 +40,8 @@ void WindowHome::initHotKey()
     SingleApplication *a = static_cast<SingleApplication*>(SingleApplication::instance());
     connect(a, &SingleApplication::instanceStarted, this, &WindowHome::show);
 
-    QHotkey *hotkeyForShowWindow = new QHotkey(QKeySequence("Ctrl+/"), true, this);
-    connect(hotkeyForShowWindow, &QHotkey::activated, this, &WindowHome::hideHome);// wait to adapt
+    QHotkey *hotkeyForAwakingAndSleeping = new QHotkey(QKeySequence("Ctrl+/"), true, this);
+    connect(hotkeyForAwakingAndSleeping, &QHotkey::activated, this, &WindowHome::awakeAndSleep);
 
     QHotkey *hotkeyForQuickStart = new QHotkey(QKeySequence("Ctrl+\\"), true, this);
     connect(hotkeyForQuickStart, &QHotkey::activated, home, &Home::startCopySig);
@@ -83,10 +85,25 @@ void WindowHome::hideHome()
     }
 }
 
+void WindowHome::showFullOpacity()
+{
+    if (windowOpacity() != 1.0)
+        setWindowOpacity(1.0);
+    show();
+}
+
+void WindowHome::awakeAndSleep()
+{
+    if (isVisible())
+        hideHome();
+    else
+        showFullOpacity();
+}
+
 void WindowHome::initSysTray()
 {
     QMenu *trayMenu = new QMenu(this);
-    QAction *showAction = trayMenu->addAction("Show", this, [=]{ if (!isVisible()) show(); });
+    QAction *showAction = trayMenu->addAction("Show", this, [=]{ if (!isVisible()) showFullOpacity(); });
     QAction *exitAction = trayMenu->addAction("Exit", this, &WindowHome::quitDirectly);
     QIcon icon;
     icon.addFile(QString::fromUtf8(":/icons/browse.svg"), QSize(), QIcon::Normal, QIcon::Off);
@@ -107,7 +124,7 @@ void WindowHome::handleTrayActivated(QSystemTrayIcon::ActivationReason reason)
     switch (reason) {
     case (QSystemTrayIcon::DoubleClick):
         if (!isVisible())
-            show();
+            showFullOpacity();
         break;
     default:
         break;

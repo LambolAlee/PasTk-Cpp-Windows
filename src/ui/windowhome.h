@@ -41,6 +41,8 @@ private:
     void initSysTray();
     void resetPos();
     void initHotKey();
+    void awakeAndSleep();
+    void showFullOpacity();
 };
 
 #endif // WINDOWHOME_H
