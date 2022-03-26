@@ -3,10 +3,7 @@
 #include <qdebug.h>
 #include <QEvent>
 
-ButtonStateWatcher::ButtonStateWatcher(QObject *parent) : QObject(parent)
-{
-
-}
+ButtonStateWatcher::ButtonStateWatcher(QObject *parent) : QObject(parent) {}
 
 bool ButtonStateWatcher::eventFilter(QObject *obj, QEvent *event)
 {

@@ -16,6 +16,8 @@ public:
     explicit TitleBarOfMe(QWidget *parent = nullptr);
     ~TitleBarOfMe();
 
+    void setMaxmizedButtonVisible(bool state);
+
 signals:
     void minimizeSig();
 

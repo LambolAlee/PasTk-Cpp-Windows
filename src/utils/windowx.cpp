@@ -1,8 +1,5 @@
 #include "windowx.h"
 
-#include <windows.h>
-
-#include <QGraphicsDropShadowEffect>
 #include <QColor>
 #include <QDebug>
 #include <QMouseEvent>
@@ -11,10 +8,6 @@
 WindowX::WindowX(QWidget *parent) : QWidget(parent)
 {
     setWindowFlags(Qt::CustomizeWindowHint);
-    HWND m_hWnd = (HWND)winId();
-    LONG s = GetWindowLong(m_hWnd, GWL_STYLE);
-    SetWindowLong(m_hWnd, GWL_STYLE, s | WS_SYSMENU | WS_MINIMIZEBOX);
-
     initTitleBar();
 }
 
@@ -38,15 +31,17 @@ void WindowX::initTitleBar()
 
 bool WindowX::eventFilter(QObject *obj, QEvent *event)
 {
-    TitleBarOfMe *title = static_cast<TitleBarOfMe *>(obj);
+    static bool pressed = false;
     if (event->type() == QEvent::MouseButtonPress) {
         QMouseEvent *e = static_cast<QMouseEvent *>(event);
-        //qDebug() << pos() << " " << e->pos() << " " << e->globalPosition();
         startPos = e->globalPosition() - pos();
-    } else if (event->type() == QEvent::MouseMove) {
+        pressed = true;
+    } else if (pressed && event->type() == QEvent::MouseMove) {
         QMouseEvent *e = static_cast<QMouseEvent *>(event);
         QPoint distance = (e->globalPosition() - startPos).toPoint();
         move(distance);
+    } else if (event->type() == QEvent::MouseButtonRelease) {
+        pressed = false;
     }
     return QWidget::eventFilter(obj, event);
 }

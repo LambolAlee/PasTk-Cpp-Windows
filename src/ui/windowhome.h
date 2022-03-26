@@ -3,7 +3,6 @@
 
 #include "utils/windowx.h"
 #include "ui/home.h"
-#include "utils/opacitywatcher.h"
 
 #include <QObject>
 #include <QCloseEvent>
@@ -17,11 +16,6 @@ public:
     WindowHome(QWidget *parent = nullptr);
     ~WindowHome();
 
-/*protected:
-    void mousePressEvent(QMouseEvent *event) override;
-    void mouseReleaseEvent(QMouseEvent *event) override;
-    void mouseMoveEvent(QMouseEvent *event) override;
-*/
 private:
     void closeEvent(QCloseEvent *event);
 
@@ -32,7 +26,6 @@ private slots:
 
 private:
     Home *home;
-    OpacityWatcher *opacWatcher;
     QSettings *settings;
     bool directQuitFlag = false;
     bool firstHide = true;
@@ -42,7 +35,6 @@ private:
     void resetPos();
     void initHotKey();
     void awakeAndSleep();
-    void showFullOpacity();
 };
 
 #endif // WINDOWHOME_H

@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>238</width>
+    <width>245</width>
     <height>172</height>
    </rect>
   </property>
@@ -74,7 +74,6 @@
            <widget class="QLabel" name="tenLCD">
             <property name="font">
              <font>
-              <family>Pro Display tfb</family>
               <pointsize>50</pointsize>
              </font>
             </property>
@@ -90,7 +89,6 @@
            <widget class="QLabel" name="baseLCD">
             <property name="font">
              <font>
-              <family>Pro Display tfb</family>
               <pointsize>50</pointsize>
              </font>
             </property>
@@ -187,36 +185,11 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>238</width>
+     <width>245</width>
      <height>26</height>
     </rect>
    </property>
   </widget>
-  <action name="actionReset_2">
-   <property name="text">
-    <string>Detail</string>
-   </property>
-  </action>
-  <action name="actionReset_3">
-   <property name="text">
-    <string>Reset</string>
-   </property>
-  </action>
-  <action name="actionExit">
-   <property name="text">
-    <string>Exit</string>
-   </property>
-  </action>
-  <action name="actionAbout">
-   <property name="text">
-    <string>About</string>
-   </property>
-  </action>
-  <action name="actionSettings">
-   <property name="text">
-    <string>Settings</string>
-   </property>
-  </action>
  </widget>
  <customwidgets>
   <customwidget>

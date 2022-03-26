@@ -5,7 +5,7 @@
 
 WindowHome::WindowHome(QWidget *parent)
     : WindowX(parent)
-    , home(new Home) // why cannot use Home(this)
+    , home(new Home) // why cannot use home(new Home(this))
     , settings(home->getSettings())
 {
     setWindowFlag(Qt::WindowStaysOnTopHint);
@@ -15,19 +15,16 @@ WindowHome::WindowHome(QWidget *parent)
 
     resetPos();
 
-    opacWatcher = new OpacityWatcher(this);
-    installEventFilter(opacWatcher);
-
     initSysTray();
     initHotKey();
 
+    title->setMaxmizedButtonVisible(false);
+
     connect(home, &Home::windowClose, this, &WindowHome::close);
     connect(home, &Home::windowCloseForced, this, &WindowHome::quitDirectly);
-    connect(home, &Home::opacStartSig, this, [=]{ opacWatcher->start(); });
-    connect(home, &Home::opacStopSig, this, [=]{ opacWatcher->stop(); });
     connect(title, &TitleBarOfMe::minimizeSig, this, &WindowHome::showMinimized);
     connect(home, &Home::hideWindowSig, this, &WindowHome::hide);
-    connect(home, &Home::showWindowSig, this, &WindowHome::show);
+    connect(home, &Home::showWindowSig, this, [=]{ if (!isVisible()) show(); });
 }
 
 WindowHome::~WindowHome()
@@ -85,25 +82,18 @@ void WindowHome::hideHome()
     }
 }
 
-void WindowHome::showFullOpacity()
-{
-    if (windowOpacity() != 1.0)
-        setWindowOpacity(1.0);
-    show();
-}
-
 void WindowHome::awakeAndSleep()
 {
     if (isVisible())
         hideHome();
     else
-        showFullOpacity();
+        show();
 }
 
 void WindowHome::initSysTray()
 {
     QMenu *trayMenu = new QMenu(this);
-    QAction *showAction = trayMenu->addAction("Show", this, [=]{ if (!isVisible()) showFullOpacity(); });
+    QAction *showAction = trayMenu->addAction("Show", this, [=]{ if (!isVisible()) show(); });
     QAction *exitAction = trayMenu->addAction("Exit", this, &WindowHome::quitDirectly);
     QIcon icon;
     icon.addFile(QString::fromUtf8(":/icons/browse.svg"), QSize(), QIcon::Normal, QIcon::Off);
@@ -124,7 +114,7 @@ void WindowHome::handleTrayActivated(QSystemTrayIcon::ActivationReason reason)
     switch (reason) {
     case (QSystemTrayIcon::DoubleClick):
         if (!isVisible())
-            showFullOpacity();
+            show();
         break;
     default:
         break;

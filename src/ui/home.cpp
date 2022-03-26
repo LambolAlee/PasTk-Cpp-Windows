@@ -20,7 +20,8 @@ Home::Home(QWidget *parent)
     ui->setupUi(this);
     setWindowFlag(Qt::Widget);
 
-    setFixedSize(this->width(), 128);
+    setFontForLCDs();
+
     settings = new QSettings("./conf.ini", QSettings::IniFormat);
 
     initStatusBar();
@@ -46,6 +47,18 @@ Home::~Home()
     delete _sep;
 }
 
+void Home::setFontForLCDs()
+{
+    setFixedSize(this->width(), 128);
+    auto basefont = ui->baseLCD->font();
+    basefont.setFamily("Pro Display tfb");
+    ui->baseLCD->setFont(basefont);
+
+    auto tenFont = ui->tenLCD->font();
+    tenFont.setFamily("Pro Display tfb");
+    ui->tenLCD->setFont(tenFont);
+}
+
 void Home::initStatusBar()
 {
     modeLabel = new QLabel(this);
@@ -55,6 +68,7 @@ void Home::initStatusBar()
 
 void Home::createToolbar()
 {
+    // `mode` menu, switch different paste mode
     QMenu *modeMenu = ui->menuBar->addMenu("Mode");
     QActionGroup *group = new QActionGroup(this);
     QAction *m = modeMenu->addAction("Merge Mode");
@@ -78,8 +92,15 @@ void Home::createToolbar()
     QAction *action = modeMenu->findChild<QAction*>(name, Qt::FindDirectChildrenOnly);
     action->trigger();
 
+    // add single action to the menubar [0]
     ui->menuBar->addAction("About", this, &Home::switchPage);
-    ui->menuBar->addAction("Detail", this, &Home::callDetail);
+
+    // `Tools` menu, contains detail and template editor entrance
+    QMenu *toolsMenu = ui->menuBar->addMenu(" Tools ");
+    toolsMenu->addAction("Detail", this, &Home::callDetail);
+    toolsMenu->addAction("Template", this, &Home::callTemplate);
+
+    // add single action to the menubar [1]
     ui->menuBar->addAction("Reset", this, &Home::reset);
     ui->menuBar->addAction("Exit", this, &Home::windowClose);
     obs = new ShiftClickObserver(this);
@@ -209,6 +230,12 @@ void Home::callDetail()
     stopWatch();
     detailW->showWindow();
     startOpacAnimation();
+}
+
+void Home::callTemplate()
+{
+    // TODO
+    qDebug() << "template window called";
 }
 
 void Home::reset()

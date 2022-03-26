@@ -3,10 +3,7 @@
 #include <QMouseEvent>
 #include <QMenuBar>
 
-ShiftClickObserver::ShiftClickObserver(QObject *parent) : QObject(parent)
-{
-
-}
+ShiftClickObserver::ShiftClickObserver(QObject *parent) : QObject(parent) {}
 
 bool ShiftClickObserver::eventFilter(QObject *obj, QEvent *event)
 {

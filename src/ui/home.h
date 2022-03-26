@@ -82,6 +82,7 @@ private:
     void startWatch();
     void stopWatch();
     void callDetail();
+    void callTemplate();
     void reset();
     void clearData() {
         _data.clear();
@@ -94,5 +95,6 @@ private:
     inline void startOpacAnimation() { emit opacStartSig(); }
     inline void showWindowHome() { emit showWindowSig(); }
     inline void hideWindowHome() { emit hideWindowSig(); }
+    void setFontForLCDs();
 };
 #endif // HOME_H

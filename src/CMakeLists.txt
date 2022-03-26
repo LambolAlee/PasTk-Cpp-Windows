@@ -51,6 +51,10 @@ set(PROJECT_SOURCES
         widgets/titlebarofme.cpp
         widgets/titlebarofme.ui
 
+        widgets/floatinformationlabel.h
+        widgets/floatinformationlabel.cpp
+        widgets/floatinformationlabel.ui
+
         utils/singleton.hpp
 
         utils/shiftclickobserver.h
@@ -58,9 +62,6 @@ set(PROJECT_SOURCES
 
         utils/buttonstatewatcher.h
         utils/buttonstatewatcher.cpp
-
-        utils/opacitywatcher.h
-        utils/opacitywatcher.cpp
 
         utils/windowx.h
         utils/windowx.cpp

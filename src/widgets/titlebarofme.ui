@@ -42,9 +42,6 @@
   <property name="windowTitle">
    <string>Form</string>
   </property>
-  <property name="styleSheet">
-   <string notr="true">background:white;</string>
-  </property>
   <layout class="QHBoxLayout" name="horizontalLayout_2">
    <property name="spacing">
     <number>5</number>
@@ -99,7 +96,6 @@
     <widget class="QLabel" name="titleName">
      <property name="font">
       <font>
-       <family>Microsoft YaHei UI</family>
        <pointsize>9</pointsize>
       </font>
      </property>
@@ -127,9 +123,9 @@
       <number>0</number>
      </property>
      <item>
-      <widget class="QPushButton" name="settingButton">
+      <widget class="QToolButton" name="settingButton">
        <property name="sizePolicy">
-        <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+        <sizepolicy hsizetype="MinimumExpanding" vsizetype="Fixed">
          <horstretch>0</horstretch>
          <verstretch>0</verstretch>
         </sizepolicy>
@@ -157,9 +153,6 @@
        <property name="contextMenuPolicy">
         <enum>Qt::DefaultContextMenu</enum>
        </property>
-       <property name="styleSheet">
-        <string notr="true"/>
-       </property>
        <property name="text">
         <string/>
        </property>
@@ -173,15 +166,15 @@
          <height>15</height>
         </size>
        </property>
-       <property name="flat">
+       <property name="autoRaise">
         <bool>true</bool>
        </property>
       </widget>
      </item>
      <item>
-      <widget class="QPushButton" name="miniButton">
+      <widget class="QToolButton" name="miniButton">
        <property name="sizePolicy">
-        <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+        <sizepolicy hsizetype="MinimumExpanding" vsizetype="Fixed">
          <horstretch>0</horstretch>
          <verstretch>0</verstretch>
         </sizepolicy>
@@ -200,9 +193,6 @@
        </property>
        <property name="focusPolicy">
         <enum>Qt::NoFocus</enum>
-       </property>
-       <property name="styleSheet">
-        <string notr="true"/>
        </property>
        <property name="text">
         <string/>
@@ -217,15 +207,15 @@
          <height>15</height>
         </size>
        </property>
-       <property name="flat">
+       <property name="autoRaise">
         <bool>true</bool>
        </property>
       </widget>
      </item>
      <item>
-      <widget class="QPushButton" name="maxButton">
+      <widget class="QToolButton" name="maxButton">
        <property name="sizePolicy">
-        <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+        <sizepolicy hsizetype="MinimumExpanding" vsizetype="Fixed">
          <horstretch>0</horstretch>
          <verstretch>0</verstretch>
         </sizepolicy>
@@ -245,9 +235,6 @@
        <property name="focusPolicy">
         <enum>Qt::NoFocus</enum>
        </property>
-       <property name="styleSheet">
-        <string notr="true"/>
-       </property>
        <property name="text">
         <string/>
        </property>
@@ -261,7 +248,7 @@
          <height>15</height>
         </size>
        </property>
-       <property name="flat">
+       <property name="autoRaise">
         <bool>true</bool>
        </property>
       </widget>
